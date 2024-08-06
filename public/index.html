@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCompile</title>
+    <link rel="icon" href="logo.svg" type="image/png">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <!-- Optional Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/eclipse.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Google Fonts: Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/selection/active-line.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #4a01fe, #df46ad);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            align-items: center;
+            overflow: hidden; /* Ensure no scrollbars are shown */
+        }
+
+        .header {
+            width: 100%;
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .title-logo {
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .title-input {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 5px;
+        }
+
+        .buttons-container button {
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 2px solid #333333;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        .buttons-container button:hover {
+            transform: scale(1.05);
+        }
+
+        .buttons-container .fa {
+            margin-right: 5px;
+        }
+
+        .run-button {
+            background-color: #ffffff;
+            color: #4CAF50;
+        }
+
+        .run-button:hover {
+            background-color: #4CAF50;
+            color: #ffffff;
+        }
+
+        .correct-button {
+            background-color: #ffffff;
+            color: #2196F3;
+        }
+
+        .correct-button:hover {
+            background-color: #2196F3;
+            color: #ffffff;
+        }
+
+        .save-button {
+            background-color: #FF9800;
+            color: white;
+            border: none;
+        }
+
+        .save-button:hover {
+            background-color: #e58900;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .editor-output-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .editor-container, .output-container {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .editor-container {
+            height: 50vh;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .CodeMirror {
+            height: 100%;
+            font-size: 14px;
+            line-height: 1.6;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .CodeMirror-gutters {
+            background: #fff;
+            border-right: 1px solid #ddd;
+        }
+
+        .output-container {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 30vh;
+        }
+
+        .output-container pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            width: 100%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none; /* Initially hidden */
+        }
+
+        .loader {
+            --s: 25px;
+            --_d: calc(0.353*var(--s));
+            width: calc(var(--s) + var(--_d));
+            aspect-ratio: 1;
+            display: flex;
+        }
+        .loader:before,
+        .loader:after {
+            content: "";
+            flex: 1;
+            clip-path: polygon(var(--_d) 0,100% 0,100% calc(100% - var(--_d)),calc(100% - var(--_d)) 100%,0 100%,0 var(--_d));
+            background:
+                conic-gradient(from -90deg at calc(100% - var(--_d)) var(--_d),
+                #fff 135deg,#666 0 270deg,#aaa 0);
+            animation: l5 1.2s infinite;
+        }
+        .loader:before {
+            margin-right: calc(var(--_d)/-2 - 1px);
+        }
+        .loader:after {
+            margin-left: calc(var(--_d)/-2 - 1px);
+            animation-delay: 0.6s
+        }
+        @keyframes l5{
+            0%     {transform: translateY(0)}
+            16.67% {transform: translateY(-10px)}
+            33.33% {transform: translateY(10px)}
+            50%,
+            100%   {transform: translateY(0)}
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .title-container {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .buttons-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container {
+                width: 95%;
+                margin-top: 100px;
+            }
+
+            .editor-container {
+                height: 40vh;
+            }
+
+            .output-container {
+                height: 25vh;
+            }
+        }
+
+        /* Custom syntax highlighting */
+        .cm-s-eclipse span.cm-keyword { color: #0000FF; font-weight: bold; }
+        .cm-s-eclipse span.cm-operator { color: #AA22FF; }
+        .cm-s-eclipse span.cm-variable { color: #008080; }
+        .cm-s-eclipse span.cm-variable-2 { color: #B8860B; }
+        .cm-s-eclipse span.cm-string { color: #D14; }
+        .cm-s-eclipse span.cm-comment { color: #888888; font-style: italic; }
+        .cm-s-eclipse span.cm-number { color: #164; }
+        .cm-s-eclipse span.cm-builtin { color: #30a; }
+        .cm-s-eclipse span.cm-tag { color: #170; }
+        .cm-s-eclipse span.cm-attribute { color: #00C; }
+        .cm-s-eclipse span.cm-comment { color: #888888; font-style: italic; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <img src="empty.svg" alt="Logo" class="logo">
+    <div class="title-container">
+        <img src="1.svg" alt="Title Logo" class="title-logo">
+        <input type="text" class="title-input" id="code-title" placeholder="Enter Title Here">
+    </div>
+    <div class="buttons-container">
+        <button class="run-button" onclick="runCode()"><i class="fa fa-play"></i>Run</button>
+        <button class="correct-button" onclick="correctCode()"><i class="fa fa-check"></i>Correct</button>
+        <button class="save-button" onclick="saveCode()"><i class="fa fa-save"></i>Save</button>
+    </div>
+</div>
+<div class="container">
+    <div class="editor-output-container">
+        <div class="editor-container">
+            <textarea id="code-editor"></textarea>
+        </div>
+        <div class="output-container" id="output-container"></div>
+    </div>
+</div>
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loader"></div>
+</div>
+<script>
+    var editor;
+
+    window.onload = function() {
+        editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            lineNumbers: true,
+            mode: "javascript",
+            theme: "eclipse",
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            autoCloseTags: true,
+            styleActiveLine: true,
+        });
+    };
+
+    function showLoading() {
+        document.getElementById('loading-overlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-overlay').style.display = 'none';
+    }
+
+    async function runCode() {
+        showLoading();
+        var code = editor.getValue();
+        var outputContainer = document.getElementById('output-container');
+        outputContainer.innerHTML = ''; // Clear previous output
+
+        try {
+            const response = await fetch('/run-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                outputContainer.innerHTML = `<pre><code>${data.output}</code></pre>`;
+            } else {
+                outputContainer.innerHTML = `<pre><code>${data.message}</code></pre>`;
+            }
+        } catch (error) {
+            console.error(error);
+            outputContainer.innerHTML = "<pre><code>An error occurred while processing your request.</code></pre>";
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function correctCode() {
+        showLoading();
+        var code = editor.getValue();
+
+        try {
+            const response = await fetch('/correct-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Extract the corrected code text
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(data.correctedCode, 'text/html');
+                const correctedCode = htmlDoc.body.textContent || "";
+
+                editor.setValue(correctedCode.trim());
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred while processing your request.");
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function saveCode() {
+        var title = document.getElementById('code-title').value;
+        var code = editor.getValue();
+        var blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = title ? title + ".js" : "code.js";
+        link.click();
+        alert("Code saved as " + (title ? title + ".js" : "code.js") + "!");
+    }
+</script>
+</body>
+</html>
