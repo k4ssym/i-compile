@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +21,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/selection/active-line.min.js"></script>
+
     <style>
         body {
             margin: 0;
@@ -30,113 +32,125 @@
             flex-direction: column;
             height: 100vh;
             align-items: center;
-            overflow: hidden; /* Ensure no scrollbars are shown */
+            overflow: hidden;
         }
 
         .header {
-            width: 100%;
-            background: #f5f5f5;
-            border-bottom: 1px solid #ddd;
-            padding: 10px 20px;
+            width: 70%;
+            background: #2a2a2a;
+            border-bottom: 2px solid #444;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: fixed;
-            top: 0;
+            top: 10px;
             z-index: 1000;
-            font-size: 14px;
+            font-size: 16px;
             box-sizing: border-box;
-        }
-
-        .logo {
-            height: 40px;
-            margin-right: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
         }
 
         .title-container {
             display: flex;
             align-items: center;
             flex-grow: 1;
-            margin-right: 10px;
+            margin-right: 15px;
         }
 
         .title-logo {
-            height: 20px;
+            height: 25px;
             margin-right: 10px;
         }
 
         .title-input {
             width: 100%;
-            padding: 5px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 8px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            background-color: #3c3c3c;
+            color: #fff;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .title-input:focus {
+            background-color: #5a5a5a;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .buttons-container {
             display: flex;
-            gap: 5px;
+            align-items: center;
+            gap: 10px;
         }
 
         .buttons-container button {
-            padding: 5px 10px;
+            padding: 10px 20px;
             font-size: 14px;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border: 2px solid #333333;
-            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .buttons-container button:hover {
-            transform: scale(1.05);
-        }
-
-        .buttons-container .fa {
+        .buttons-container button i {
             margin-right: 5px;
         }
 
         .run-button {
-            background-color: #ffffff;
-            color: #4CAF50;
+            background: linear-gradient(145deg, #28a745, #218838);
+            color: white;
         }
 
         .run-button:hover {
-            background-color: #4CAF50;
-            color: #ffffff;
+            background: linear-gradient(145deg, #218838, #28a745);
+            transform: translateY(-2px);
         }
 
         .correct-button {
-            background-color: #ffffff;
-            color: #2196F3;
+            background: linear-gradient(145deg, #17a2b8, #138496);
+            color: white;
         }
 
         .correct-button:hover {
-            background-color: #2196F3;
-            color: #ffffff;
+            background: linear-gradient(145deg, #138496, #17a2b8);
+            transform: translateY(-2px);
         }
 
         .save-button {
-            background-color: #FF9800;
+            background: linear-gradient(145deg, #ffc107, #e0a800);
             color: white;
-            border: none;
         }
 
         .save-button:hover {
-            background-color: #e58900;
+            background: linear-gradient(145deg, #e0a800, #ffc107);
+            transform: translateY(-2px);
+        }
+
+        .coin-info {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .coin-info i {
+            margin-right: 8px;
+            color: #FFD700;
         }
 
         .container {
-            width: 90%;
+            width: 80%;
             max-width: 1200px;
-            margin-top: 80px;
+            margin-top: 85px;
             display: flex;
             flex-direction: column;
             background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
             overflow: hidden;
             box-sizing: border-box;
         }
@@ -147,24 +161,24 @@
             overflow: hidden;
         }
 
-        .editor-container, .output-container {
+        .editor-container,
+        .output-container {
             width: 100%;
-            padding: 10px;
+            padding: 15px;
             box-sizing: border-box;
             overflow-y: auto;
         }
 
         .editor-container {
             height: 50vh;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 2px solid #ddd;
         }
 
         .CodeMirror {
             height: 100%;
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.6;
             font-family: 'Consolas', 'Courier New', Courier, monospace;
-            letter-spacing: 0.05em;
         }
 
         .CodeMirror-gutters {
@@ -174,8 +188,8 @@
 
         .output-container {
             background-color: #f9f9f9;
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 16px;
             line-height: 1.6;
             white-space: pre-wrap;
             overflow: hidden;
@@ -186,13 +200,42 @@
 
         .output-container pre {
             background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 15px;
+            border-radius: 8px;
             overflow-x: auto;
             width: 100%;
             box-sizing: border-box;
             word-wrap: break-word;
             white-space: pre-wrap;
+        }
+
+        .profile-info-container {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #profile-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .edit-profile-link {
+            font-size: 14px;
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .edit-profile-link:hover {
+            text-decoration: underline;
         }
 
         .loading-overlay {
@@ -206,39 +249,52 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            display: none; /* Initially hidden */
+            display: none;
         }
 
         .loader {
             --s: 25px;
-            --_d: calc(0.353*var(--s));
+            --_d: calc(0.353 * var(--s));
             width: calc(var(--s) + var(--_d));
             aspect-ratio: 1;
             display: flex;
         }
+
         .loader:before,
         .loader:after {
             content: "";
             flex: 1;
-            clip-path: polygon(var(--_d) 0,100% 0,100% calc(100% - var(--_d)),calc(100% - var(--_d)) 100%,0 100%,0 var(--_d));
-            background:
-                conic-gradient(from -90deg at calc(100% - var(--_d)) var(--_d),
-                #fff 135deg,#666 0 270deg,#aaa 0);
+            clip-path: polygon(var(--_d) 0, 100% 0, 100% calc(100% - var(--_d)), calc(100% - var(--_d)) 100%, 0 100%, 0 var(--_d));
+            background: conic-gradient(from -90deg at calc(100% - var(--_d)) var(--_d), #fff 135deg, #666 0 270deg, #aaa 0);
             animation: l5 1.2s infinite;
         }
+
         .loader:before {
-            margin-right: calc(var(--_d)/-2 - 1px);
+            margin-right: calc(var(--_d) / -2 - 1px);
         }
+
         .loader:after {
-            margin-left: calc(var(--_d)/-2 - 1px);
-            animation-delay: 0.6s
+            margin-left: calc(var(--_d) / -2 - 1px);
+            animation-delay: 0.6s;
         }
-        @keyframes l5{
-            0%     {transform: translateY(0)}
-            16.67% {transform: translateY(-10px)}
-            33.33% {transform: translateY(10px)}
+
+        @keyframes l5 {
+            0% {
+                transform: translateY(0);
+            }
+
+            16.67% {
+                transform: translateY(-10px);
+            }
+
+            33.33% {
+                transform: translateY(10px);
+            }
+
             50%,
-            100%   {transform: translateY(0)}
+            100% {
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
@@ -260,7 +316,7 @@
 
             .container {
                 width: 95%;
-                margin-top: 100px;
+                margin-top: 120px;
             }
 
             .editor-container {
@@ -272,138 +328,295 @@
             }
         }
 
-        /* Custom syntax highlighting */
-        .cm-s-eclipse span.cm-keyword { color: #0000FF; font-weight: bold; }
-        .cm-s-eclipse span.cm-operator { color: #AA22FF; }
-        .cm-s-eclipse span.cm-variable { color: #008080; }
-        .cm-s-eclipse span.cm-variable-2 { color: #B8860B; }
-        .cm-s-eclipse span.cm-string { color: #D14; }
-        .cm-s-eclipse span.cm-comment { color: #888888; font-style: italic; }
-        .cm-s-eclipse span.cm-number { color: #164; }
-        .cm-s-eclipse span.cm-builtin { color: #30a; }
-        .cm-s-eclipse span.cm-tag { color: #170; }
-        .cm-s-eclipse span.cm-attribute { color: #00C; }
-        .cm-s-eclipse span.cm-comment { color: #888888; font-style: italic; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .modal-content button:hover {
+            background-color: #1e88e5;
+        }
+
+        .cm-s-eclipse span.cm-keyword {
+            color: #0000FF;
+            font-weight: bold;
+        }
+
+        .cm-s-eclipse span.cm-operator {
+            color: #AA22FF;
+        }
+
+        .cm-s-eclipse span.cm-variable {
+            color: #008080;
+        }
+
+        .cm-s-eclipse span.cm-variable-2 {
+            color: #B8860B;
+        }
+
+        .cm-s-eclipse span.cm-string {
+            color: #D14;
+        }
+
+        .cm-s-eclipse span.cm-comment {
+            color: #888888;
+            font-style: italic;
+        }
+
+        .cm-s-eclipse span.cm-number {
+            color: #164;
+        }
+
+        .cm-s-eclipse span.cm-builtin {
+            color: #30a;
+        }
+
+        .cm-s-eclipse span.cm-tag {
+            color: #170;
+        }
+
+        .cm-s-eclipse span.cm-attribute {
+            color: #00C;
+        }
+
+        .cm-s-eclipse span.cm-comment {
+            color: #888888;
+            font-style: italic;
+        }
     </style>
+
 </head>
+
 <body>
-<div class="header">
-    <img src="empty.svg" alt="Logo" class="logo">
-    <div class="title-container">
-        <img src="1.svg" alt="Title Logo" class="title-logo">
-        <input type="text" class="title-input" id="code-title" placeholder="Enter Title Here">
-    </div>
-    <div class="buttons-container">
-        <button class="run-button" onclick="runCode()"><i class="fa fa-play"></i>Run</button>
-        <button class="correct-button" onclick="correctCode()"><i class="fa fa-check"></i>Correct</button>
-        <button class="save-button" onclick="saveCode()"><i class="fa fa-save"></i>Save</button>
-    </div>
-</div>
-<div class="container">
-    <div class="editor-output-container">
-        <div class="editor-container">
-            <textarea id="code-editor"></textarea>
+    <div class="header">
+        <div class="title-container">
+            <img src="1.svg" alt="Title Logo" class="title-logo">
+            <input type="text" class="title-input" id="code-title" placeholder="Enter Title Here">
         </div>
-        <div class="output-container" id="output-container"></div>
+        <div class="buttons-container">
+            <div id="coin-balance" class="coin-info">
+                <i class="fa fa-coins"></i> <span id="balance">100</span> iCoins
+            </div>
+            <button class="run-button" onclick="runCode()"><i class="fa fa-play"></i>Run (5 <i class="fa fa-coins"></i>)</button>
+            <button class="correct-button" onclick="correctCode()"><i class="fa fa-check"></i>Correct (30 <i class="fa fa-coins"></i>)</button>
+            <button class="save-button" onclick="saveCode()"><i class="fa fa-save"></i>Save</button>
+        </div>
     </div>
-</div>
-<div class="loading-overlay" id="loading-overlay">
-    <div class="loader"></div>
-</div>
-<script>
-    var editor;
 
-    window.onload = function() {
-        editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-            lineNumbers: true,
-            mode: "javascript",
-            theme: "eclipse",
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            autoCloseTags: true,
-            styleActiveLine: true,
-        });
-    };
+    <div class="container">
+        <div class="editor-output-container">
+            <div class="editor-container">
+                <textarea id="code-editor"></textarea>
+            </div>
+            <div class="output-container" id="output-container"></div>
+        </div>
+    </div>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loader"></div>
+    </div>
 
-    function showLoading() {
-        document.getElementById('loading-overlay').style.display = 'flex';
-    }
+    <div class="profile-info-container">
+        <div class="profile-info">
+            <span id="profile-name"></span>
+            <a href="profile.html" class="edit-profile-link" id="profile-email"></a>
+        </div>
+    </div>
 
-    function hideLoading() {
-        document.getElementById('loading-overlay').style.display = 'none';
-    }
+    <!-- Login Prompt Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Login Required</h2>
+            <p>You need to be logged in to use this feature. Please login or register to continue.</p>
+            <button onclick="redirectToLogin()">Login</button>
+        </div>
+    </div>
 
-    async function runCode() {
-        showLoading();
-        var code = editor.getValue();
-        var outputContainer = document.getElementById('output-container');
-        outputContainer.innerHTML = ''; // Clear previous output
+    <script>
+        var editor;
+        var balance;
 
-        try {
-            const response = await fetch('/run-code', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ code })
+        window.onload = async function () {
+            // Initialize CodeMirror editor
+            editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+                lineNumbers: true,
+                mode: "javascript",
+                theme: "eclipse",
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                autoCloseTags: true,
+                styleActiveLine: true,
             });
 
-            const data = await response.json();
-            if (data.success) {
-                outputContainer.innerHTML = `<pre><code>${data.output}</code></pre>`;
-            } else {
-                outputContainer.innerHTML = `<pre><code>${data.message}</code></pre>`;
+            // Fetch and display profile information
+            try {
+                const response = await fetch('/profile');
+                if (response.status === 401) { // User is not logged in
+                    balance = null;
+                } else {
+                    const data = await response.json();
+                    if (data) {
+                        document.getElementById('profile-name').textContent = data.name;
+                        document.getElementById('profile-email').textContent = data.email;
+                        balance = data.icoins; // Set balance to the user's actual balance
+                        document.getElementById('balance').textContent = balance;
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load profile information');
             }
-        } catch (error) {
-            console.error(error);
-            outputContainer.innerHTML = "<pre><code>An error occurred while processing your request.</code></pre>";
-        } finally {
-            hideLoading();
+        };
+
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
         }
-    }
 
-    async function correctCode() {
-        showLoading();
-        var code = editor.getValue();
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
 
-        try {
-            const response = await fetch('/correct-code', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ code })
-            });
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
 
-            const data = await response.json();
-            if (data.success) {
-                // Extract the corrected code text
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(data.correctedCode, 'text/html');
-                const correctedCode = htmlDoc.body.textContent || "";
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
 
-                editor.setValue(correctedCode.trim());
-            } else {
-                alert(data.message);
+        async function runCode() {
+            if (balance === null) {
+                showLoginModal();
+                return;
             }
-        } catch (error) {
-            console.error(error);
-            alert("An error occurred while processing your request.");
-        } finally {
-            hideLoading();
-        }
-    }
 
-    function saveCode() {
-        var title = document.getElementById('code-title').value;
-        var code = editor.getValue();
-        var blob = new Blob([code], { type: "text/plain;charset=utf-8" });
-        var link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = title ? title + ".js" : "code.js";
-        link.click();
-        alert("Code saved as " + (title ? title + ".js" : "code.js") + "!");
-    }
-</script>
+            if (balance >= 5) {
+                showLoading();
+                var code = editor.getValue();
+                var outputContainer = document.getElementById('output-container');
+                outputContainer.innerHTML = ''; // Clear previous output
+
+                try {
+                    const response = await fetch('/run-code', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ code })
+                    });
+
+                    const data = await response.json();
+                    console.log('Frontend received:', data);  // Log the received data
+
+                    if (data.success) {
+                        balance = data.icoins; // Update balance with the new value
+                        document.getElementById('balance').textContent = balance; // Display updated balance
+
+                        const aiOutput = data.output || "No output provided by the AI";
+                        outputContainer.innerHTML = `<pre><code>${aiOutput}</code></pre>`;
+                    } else {
+                        outputContainer.innerHTML = `<pre><code>${data.message}</code></pre>`;
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);  // Detailed error logging
+                    outputContainer.innerHTML = "<pre><code>An error occurred while processing your request.</code></pre>";
+                } finally {
+                    hideLoading();
+                }
+            } else {
+                alert("Not enough iCoins. Please recharge your balance.");
+            }
+        }
+
+        async function correctCode() {
+            if (balance === null) {
+                showLoginModal();
+                return;
+            }
+
+            if (balance >= 30) {
+                showLoading();
+                var code = editor.getValue();
+                var outputContainer = document.getElementById('output-container');
+                outputContainer.innerHTML = ''; // Clear previous output
+
+                try {
+                    const response = await fetch('/correct-code', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ code })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        balance = data.icoins; // Update balance with the new value
+                        document.getElementById('balance').textContent = balance; // Display updated balance
+                        
+                        const correctedCode = data.correctedCode || "No corrections provided by the AI";
+                        editor.setValue(correctedCode.trim());
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("An error occurred while processing your request.");
+                } finally {
+                    hideLoading();
+                }
+            } else {
+                alert("Not enough iCoins. Please recharge your balance.");
+            }
+        }
+
+
+        function saveCode() {
+            if (balance === null) {
+                showLoginModal();
+                return;
+            }
+
+            var title = document.getElementById('code-title').value;
+            var code = editor.getValue();
+            var blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = title ? title + ".js" : "code.js";
+            link.click();
+            alert("Code saved as " + (title ? title + ".js" : "code.js") + "!");
+        }
+    </script>
 </body>
+
 </html>
