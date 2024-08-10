@@ -1,12 +1,14 @@
 import { Sequelize } from 'sequelize';
 
-// Use the External Database URL for the connection
-const sequelize = new Sequelize('postgresql://users_wdyn_user:qrv6rlo2yqNmeYTUUUZzWOPSrLvKv66z@dpg-cqrl2f0gph6c73a13np0-a.oregon-postgres.render.com/users_wdyn', {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
-    ssl: {
-        require: true,
-        rejectUnauthorized: false // This is important if you are connecting to a hosted database
-    }
+    dialectOptions: {
+        ssl: {
+            require: true, 
+            rejectUnauthorized: false
+        }
+    },
+    logging: false // Optional: disables logging of SQL queries to the console
 });
 
 export default sequelize;

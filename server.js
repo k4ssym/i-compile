@@ -7,6 +7,9 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 import User from './models/user.js';
 import sequelize from './models/index.js';
+import dotenv from 'dotenv';
+
+dotenv.config();  // Load environment variables from .env file
 
 const app = express();
 const PORT = process.env.PORT || 3000;
