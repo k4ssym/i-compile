@@ -1,4 +1,4 @@
-// models/User.js
+// models/user.js
 import { DataTypes } from 'sequelize';
 import sequelize from './index.js';
 
