@@ -137,6 +137,7 @@ app.get('/', (req, res) => {
     }
 });
 
+
 // Registration route
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
@@ -145,12 +146,19 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({ name, email, password: hashedPassword });
         req.session.userId = user.id;
-        res.json({ success: true });
+        req.session.save(err => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.status(500).json({ success: false, message: 'Registration failed due to session error.' });
+            }
+            res.redirect('/'); // Redirect to index.html
+        });
     } catch (error) {
         console.error('Registration Error:', error);
         res.json({ success: false, message: 'Registration failed.' });
     }
 });
+
 
 // Login route
 app.post('/login', async (req, res) => {
@@ -160,7 +168,13 @@ app.post('/login', async (req, res) => {
         const user = await User.findOne({ where: { email } });
         if (user && await bcrypt.compare(password, user.password)) {
             req.session.userId = user.id;
-            res.json({ success: true });
+            req.session.save(err => {
+                if (err) {
+                    console.error('Session save error:', err);
+                    return res.status(500).json({ success: false, message: 'Login failed due to session error.' });
+                }
+                res.redirect('/'); // Redirect to index.html
+            });
         } else {
             res.json({ success: false, message: 'Invalid email or password.' });
         }
@@ -169,6 +183,7 @@ app.post('/login', async (req, res) => {
         res.json({ success: false, message: 'Login failed.' });
     }
 });
+
 
 // Profile route
 app.get('/profile', async (req, res) => {
