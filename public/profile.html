@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iCompile</title>
+    <title>iCompile - Profile</title>
     <link rel="icon" href="logo.svg" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,58 +12,62 @@
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to bottom, #4a01fe, #df46ad);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            color: #333;
         }
 
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
             width: 100%;
             max-width: 400px;
-            text-align: center;
         }
 
         .container h1 {
+            font-size: 24px;
             margin-bottom: 20px;
-            color: #333;
+            color: #2a2a2a;
         }
 
         .container input {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             margin: 10px 0;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
+            border-radius: 8px;
             font-size: 14px;
         }
 
         .container button {
             width: 100%;
-            padding: 15px;
-            background: #4CAF50;
+            padding: 12px;
+            background: linear-gradient(145deg, #28a745, #218838);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .container button:hover {
-            background: #45a049;
+            background: linear-gradient(145deg, #218838, #28a745);
+            transform: translateY(-2px);
         }
 
         .container .logout-link {
-            margin-top: 20px;
+            margin-top: 15px;
             display: block;
-            color: #333;
+            font-size: 14px;
+            color: #007bff;
             text-decoration: none;
         }
 
@@ -71,35 +75,37 @@
             text-decoration: underline;
         }
 
-        .left-back-home-button {
+        .back-home-button {
             position: fixed;
             top: 20px;
             left: 20px;
-            background: #4CAF50;
+            background: #2196F3;
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 8px 12px;
+            border-radius: 8px;
+            padding: 10px 20px;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.3s;
             display: flex;
             align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .left-back-home-button i {
+        .back-home-button i {
             margin-right: 5px;
         }
 
-        .left-back-home-button:hover {
-            background: #45a049;
+        .back-home-button:hover {
+            background: #1e88e5;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
 <!-- Back to Home Button -->
-<button id="left-back-home-button" class="left-back-home-button">
+<button id="back-home-button" class="back-home-button">
     <i class="fas fa-arrow-left"></i> Home
 </button>
 
@@ -116,7 +122,6 @@
 </div>
 
 <script>
-    // Fetch and display the existing user data
     async function loadProfile() {
         try {
             const response = await fetch('/profile');
@@ -148,7 +153,6 @@
             const data = await response.json();
 
             if (data.success) {
-                // Redirect to index.html on successful profile update
                 window.location.href = 'index.html';
             } else {
                 errorMessage.textContent = data.message;
@@ -160,7 +164,6 @@
         }
     });
 
-    // Logout and redirect to login page
     document.getElementById('logout-link').addEventListener('click', async function(e) {
         e.preventDefault();
         try {
@@ -174,12 +177,10 @@
         }
     });
 
-    // Redirect to index.html when the left-side "Home" button is clicked
-    document.getElementById('left-back-home-button').addEventListener('click', function() {
+    document.getElementById('back-home-button').addEventListener('click', function() {
         window.location.href = 'index.html';
     });
 
-    // Load the user's current profile information when the page loads
     loadProfile();
 </script>
 
