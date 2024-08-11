@@ -12,8 +12,8 @@ import Function from './models/function.js';
 const app = express();  // Initialize app here
 const PORT = process.env.PORT || 3000;
 
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || 'your_rapidapi_key';
-const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST || 'gpt-4o.p.rapidapi.com';
+const RAPIDAPI_KEY = '31fe4e5fdfmshf6bf2c27eb8cd00p1099bdjsn178775d76e01';
+const RAPIDAPI_HOST = 'gpt-4o.p.rapidapi.com';
 const RAPIDAPI_URL = `https://${RAPIDAPI_HOST}/chat/completions`;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,13 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your_secret_key',
+    secret: 'your_secret_key',
     resave: false,
     saveUninitialized: false,  // Changed to false to avoid creating sessions for unauthenticated users
-    cookie: { secure: process.env.NODE_ENV === 'production' }  // Ensure secure: true if using HTTPS
+    cookie: { secure: false }  // Ensure secure: true if using HTTPS
 }));
 
-// Database synchronization
 sequelize.sync().catch(err => {
     console.error('Database sync error:', err);
     process.exit(1);
@@ -137,7 +136,6 @@ app.get('/', (req, res) => {
     }
 });
 
-
 // Registration route
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
@@ -146,19 +144,12 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({ name, email, password: hashedPassword });
         req.session.userId = user.id;
-        req.session.save(err => {
-            if (err) {
-                console.error('Session save error:', err);
-                return res.status(500).json({ success: false, message: 'Registration failed due to session error.' });
-            }
-            res.redirect('/'); // Redirect to index.html
-        });
+        res.json({ success: true });
     } catch (error) {
         console.error('Registration Error:', error);
         res.json({ success: false, message: 'Registration failed.' });
     }
 });
-
 
 // Login route
 app.post('/login', async (req, res) => {
@@ -168,13 +159,7 @@ app.post('/login', async (req, res) => {
         const user = await User.findOne({ where: { email } });
         if (user && await bcrypt.compare(password, user.password)) {
             req.session.userId = user.id;
-            req.session.save(err => {
-                if (err) {
-                    console.error('Session save error:', err);
-                    return res.status(500).json({ success: false, message: 'Login failed due to session error.' });
-                }
-                res.redirect('/'); // Redirect to index.html
-            });
+            res.json({ success: true });
         } else {
             res.json({ success: false, message: 'Invalid email or password.' });
         }
@@ -183,7 +168,6 @@ app.post('/login', async (req, res) => {
         res.json({ success: false, message: 'Login failed.' });
     }
 });
-
 
 // Profile route
 app.get('/profile', async (req, res) => {
