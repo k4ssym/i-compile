@@ -1,14 +1,14 @@
-// models/index.js
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('users', 'postgres', '.nIs08nIs.', {
-    host: 'localhost',
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
+    protocol: 'postgres',
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false, // This ensures SSL is used in production
+        }
+    }
 });
-sequelize.sync({ alter: true }).catch(err => {
-    console.error('Database sync error:', err);
-    process.exit(1);
-});
-
 
 export default sequelize;

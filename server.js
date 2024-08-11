@@ -12,8 +12,8 @@ import Function from './models/function.js';
 const app = express();  // Initialize app here
 const PORT = process.env.PORT || 3000;
 
-const RAPIDAPI_KEY = '31fe4e5fdfmshf6bf2c27eb8cd00p1099bdjsn178775d76e01';
-const RAPIDAPI_HOST = 'gpt-4o.p.rapidapi.com';
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || 'your_rapidapi_key';
+const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST || 'gpt-4o.p.rapidapi.com';
 const RAPIDAPI_URL = `https://${RAPIDAPI_HOST}/chat/completions`;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,12 +24,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(session({
-    secret: 'your_secret_key',
+    secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: false,  // Changed to false to avoid creating sessions for unauthenticated users
-    cookie: { secure: false }  // Ensure secure: true if using HTTPS
+    cookie: { secure: process.env.NODE_ENV === 'production' }  // Ensure secure: true if using HTTPS
 }));
 
+// Database synchronization
 sequelize.sync().catch(err => {
     console.error('Database sync error:', err);
     process.exit(1);
