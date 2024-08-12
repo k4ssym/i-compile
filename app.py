@@ -1,13 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+import psycopg2
+from psycopg2.extras import DictCursor
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(
+        os.getenv('DATABASE_URL', 'postgresql://postgres:.nIs08nIs.@localhost:5432/users'),
+        cursor_factory=DictCursor
+    )
     return conn
 
 @app.route('/')
@@ -19,7 +23,10 @@ def login_post():
     username = request.form['username']
     password = request.form['password']
     conn = get_db_connection()
-    user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM users WHERE username = %s', (username,))
+    user = cur.fetchone()
+    cur.close()
     conn.close()
 
     if user and check_password_hash(user['password'], password):
